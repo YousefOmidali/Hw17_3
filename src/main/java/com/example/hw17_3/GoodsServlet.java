@@ -8,10 +8,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
+@Slf4j
 @WebServlet(name = "GoodServlet", value = "/good")
 public class GoodsServlet extends HttpServlet {
     GoodService goodService = new GoodService();
@@ -19,11 +20,13 @@ public class GoodsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var jsonString = new String(request.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-        var objectMapper = new ObjectMapper();
-        Good good = objectMapper.readValue(jsonString, Good.class);
-        var goodAfterSearch = goodService.findById(good.getId());
-        System.out.println(goodAfterSearch);
+        try {
+            var jsonString = new String(request.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            var objectMapper = new ObjectMapper();
+            Good good = objectMapper.readValue(jsonString, Good.class);
+            var goodAfterSearch = goodService.findById(good.getId());
+            System.out.println(goodAfterSearch);
+        } catch (Exception e){log.error("doGet!",e);}
     }
 
     @Override
@@ -49,6 +52,6 @@ public class GoodsServlet extends HttpServlet {
         var jsonString = new String(req.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         var objectMapper = new ObjectMapper();
         Good good = objectMapper.readValue(jsonString, Good.class);
-        goodService.deleteById(good.getId());
+        goodService.delete(good);
     }
 }

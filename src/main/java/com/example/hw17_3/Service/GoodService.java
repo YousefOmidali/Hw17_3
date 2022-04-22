@@ -10,8 +10,8 @@ public class GoodService {
         goodRepository.save(good);
     }
 
-    public void deleteById(Integer id) {
-        goodRepository.deleteById(id);
+    public void delete(Good good) {
+        goodRepository.delete(good);
     }
 
     public void update(Good good) {
